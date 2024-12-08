@@ -77,7 +77,7 @@ function Icon3D({ icon, isHovered }) {
   )
 }
   
-  const ServiceCard = ({ service, index }) => {
+  const ServiceCard = ({ service, index, className }) => {
     const [ref, inView] = useInView({
       threshold: 0.2,
       triggerOnce: true
@@ -87,90 +87,64 @@ function Icon3D({ icon, isHovered }) {
     return (
       <motion.div
         ref={ref}
-        initial={{ opacity: 0, y: 50 }}
-        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-        transition={{ duration: 0.8, delay: index * 0.2 }}
-        whileHover={{ scale: 1.05, translateY: -10 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: index * 0.1 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        className="relative group bg-gradient-to-br from-white/10 to-white/5 
-                   backdrop-blur-xl rounded-2xl p-8 overflow-hidden"
+        className={`relative group p-8 bg-white/[0.03] hover:bg-white/[0.06]
+                   backdrop-blur-xl rounded-3xl overflow-hidden transition-all duration-300
+                   border border-white/10 hover:border-white/20 ${className}`}
       >
-        {/* Background Glow Effect */}
+        {/* Gradient Overlay */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-500/20 opacity-0 
-                     group-hover:opacity-100 transition-opacity duration-500 blur-xl"
-          animate={isHovered ? { scale: 1.2, rotate: 45 } : { scale: 1, rotate: 0 }}
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background: `radial-gradient(
+              600px circle at ${isHovered ? 'var(--mouse-x, 50%)' : '50%'} ${
+              isHovered ? 'var(--mouse-y, 50%)' : '50%'
+            }%, 
+            rgba(59, 130, 246, 0.1), 
+            transparent 40%
+            )`
+          }}
         />
   
-        {/* 3D Icon Container */}
-        <div className="h-40 mb-6">
-          <Canvas>
-            <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} intensity={1} />
-            <Icon3D isHovered={isHovered} />
-            <OrbitControls 
-              enableZoom={false} 
-              enablePan={false}
-              autoRotate
-              autoRotateSpeed={isHovered ? 4 : 2}
-            />
-          </Canvas>
-        </div>
+        {/* Icon */}
+        <motion.div
+          className="mb-4 p-3 bg-blue-500/10 rounded-xl w-fit"
+          whileHover={{ scale: 1.05 }}
+        >
+          <service.Icon className="w-6 h-6 text-blue-400" />
+        </motion.div>
   
+        {/* Content */}
         <motion.h3 
-          className="text-2xl font-bold text-white mb-4"
-          animate={isHovered ? { scale: 1.1 } : { scale: 1 }}
+          className="text-xl font-bold text-white mb-2"
+          whileHover={{ x: 5 }}
         >
           {service.title}
         </motion.h3>
   
-        <motion.p 
-          className="text-gray-300 mb-6"
-          animate={isHovered ? { opacity: 0.8 } : { opacity: 1 }}
-        >
+        <p className="text-gray-400 mb-4 line-clamp-2">
           {service.description}
-        </motion.p>
+        </p>
   
-        {/* Features List with Enhanced Animations */}
-        <motion.ul className="space-y-3">
+        {/* Features */}
+        <motion.ul className="space-y-2">
           {service.features.map((feature, idx) => (
             <motion.li
               key={idx}
-              initial={{ opacity: 0, x: -20 }}
-              animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-              transition={{ duration: 0.5, delay: index * 0.1 + idx * 0.1 }}
-              className="flex items-center text-gray-300 group/item"
+              initial={{ opacity: 0, x: -10 }}
+              animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+              transition={{ delay: index * 0.1 + idx * 0.1 }}
+              className="flex items-center text-gray-300 text-sm"
             >
-              <motion.div
-                className="mr-3 text-primary"
-                animate={isHovered ? { x: [0, 5, 0] } : {}}
-                transition={{ duration: 1, repeat: Infinity }}
-              >
-                <ArrowRight className="w-4 h-4" />
-              </motion.div>
-              <span className="group-hover/item:text-white transition-colors">
-                {feature}
-              </span>
+              <ArrowRight className="w-4 h-4 mr-2 text-blue-400" />
+              {feature}
             </motion.li>
           ))}
         </motion.ul>
-  
-        {/* Interactive Button */}
-        <motion.button
-          className="mt-6 px-6 py-3 bg-primary/20 hover:bg-primary/30 rounded-lg
-                     text-white font-medium flex items-center gap-2 group/button"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Learn More
-          <motion.div
-            animate={{ x: isHovered ? 5 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ChevronRight className="w-4 h-4" />
-          </motion.div>
-        </motion.button>
       </motion.div>
     )
   }
@@ -187,44 +161,64 @@ export default function Services() {
   })
 
   return (
-    <section id="services" className="py-20 bg-gradient-to-b from-gradient-end to-gradient-start relative">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-b from-white/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-t from-white/5 to-transparent rounded-full blur-3xl" />
-      </div>
+    <section className="py-32 relative overflow-hidden bg-gradient-to-br from-[#070B14] to-[#0F172A]">
+      {/* Grid Background */}
+      <div 
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: 'url(/grid.svg)',
+          
+        }}
+      />
+
+      {/* Enhanced Background Effects */}
+      <motion.div 
+        className="absolute inset-0"
+        animate={{
+          background: [
+            'radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)',
+            'radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)',
+            'radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)',
+          ],
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+      />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section with enhanced styling */}
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-20 space-y-6"
         >
           <motion.div
-            initial={{ scale: 0 }}
-            animate={inView ? { scale: 1 } : { scale: 0 }}
-            transition={{ duration: 0.5, type: "spring" }}
-            className="inline-block mb-4"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full 
+                       bg-blue-500/10 border border-blue-500/20 backdrop-blur-sm
+                       hover:bg-blue-500/15 transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
           >
-            <div className="bg-white/10 backdrop-blur-md rounded-full p-3">
-              <Globe className="w-6 h-6 text-white" />
-            </div>
+            <Globe className="w-5 h-5 text-blue-400" />
+            <span className="text-sm font-medium text-blue-300">Our Services</span>
           </motion.div>
           
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Our Expertise
+          <h2 className="text-4xl md:text-6xl font-bold text-white">
+            Comprehensive Solutions
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Comprehensive digital solutions tailored to transform your business
-            with cutting-edge technology and innovation.
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            Transforming businesses through innovative technology and strategic solutions
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-20">
+        {/* Enhanced Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <ServiceCard key={service.title} service={service} index={index} />
+            <ServiceCard 
+              key={service.title} 
+              service={service} 
+              index={index}
+              className="h-full"
+            />
           ))}
         </div>
       </div>
