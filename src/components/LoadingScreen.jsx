@@ -61,7 +61,7 @@ export default function LoadingScreen() {
 
   return (
     <motion.div
-      className="fixed inset-0 bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 bg-gradient-to-br from-[#070B14] to-[#0F172A] flex items-center justify-center overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
