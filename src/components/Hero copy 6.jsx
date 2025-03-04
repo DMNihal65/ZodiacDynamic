@@ -324,7 +324,7 @@ const Hero = ({ constellationData }) => {
         <div className="max-w-5xl mx-auto text-center">
           {/* Main Title */}
           <h1 className="hero-title text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter text-white mb-6">
-            <span className="font-bold bg-gradient-to-b from-blue-300 to-blue-600 bg-clip-text text-transparent mr-3 ">
+            <span className="font-bold bg-gradient-to-r from-blue-300 to-blue-600 bg-clip-text text-transparent mr-3">
               {splitText("Zodiac")}
             </span>
             <span className="font-extralight text-blue-100/90">

@@ -68,7 +68,7 @@ const LOADING_MESSAGES = [
 
 export default function LoadingScreen({ onLoaded }) {
   const [progress, setProgress] = useState(0);
-  const [activeConstellation, setActiveConstellation] = useState('taurus');
+  const [activeConstellation, setActiveConstellation] = useState('leo');
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
   const threeContainerRef = useRef(null);
   const scene = useRef(new THREE.Scene());
@@ -350,8 +350,8 @@ export default function LoadingScreen({ onLoaded }) {
         // Fade out loading screen
         gsap.to('.loading-screen', {
           opacity: 0,
-          duration: 3.5,
-          delay: 1.5,
+          duration: 1.5,
+          delay: 0.5,
           ease: 'power4.inOut',
           onComplete: onLoaded
         });
@@ -488,7 +488,7 @@ export default function LoadingScreen({ onLoaded }) {
             transition={{ delay: 0.8, duration: 1 }}
             className="text-blue-300 font-light text-xl tracking-wider"
           >
-            
+            {CONSTELLATIONS[activeConstellation].name}
           </motion.div>
         </div>
       </div>
