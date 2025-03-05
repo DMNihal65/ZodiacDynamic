@@ -12,3 +12,10 @@ canvas {
   body {
     overflow-x: hidden;
   }
+  .word-1 span {
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
