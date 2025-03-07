@@ -59,7 +59,7 @@ export default function Navbar() {
           >
             <span className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 
                            bg-clip-text text-transparent">
-              NexusForge
+              Zodiac Dynamics
             </span>
           </motion.div>
 
