@@ -53,15 +53,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <motion.div 
+          <motion.a 
+            href="#home"
             className="flex-shrink-0"
             whileHover={{ scale: 1.05 }}
           >
-            <span className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 
-                           bg-clip-text text-transparent">
-              Zodiac Dynamics
-            </span>
-          </motion.div>
+            <img 
+              src="/zodiac_logo.png"  
+              alt="Zodiac Dynamics" 
+              height={'20%'}
+              className="h-14 w-14 md:h-14"
+            />
+          </motion.a>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-1">

@@ -139,8 +139,14 @@ export default function Footer() {
         <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-blue-500/10 to-transparent blur-sm" />
       </div>
       
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+      {/* Wave separator */}
+      <div className="absolute top-0 left-0 right-0 w-full overflow-hidden leading-none">
+        <svg className="relative block w-full h-12 transform rotate-180" 
+             viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" 
+                fill="#0F172A" fillOpacity="0.3"></path>
+        </svg>
+      </div>
       
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-16">
@@ -153,7 +159,7 @@ export default function Footer() {
               transition={{ duration: 0.5 }}
             >
               <div className="mb-6">
-                <img src="/logo.svg" alt="NexusForge Logo" className="h-10" />
+                <img src="/zodiac_logo.png" alt="Zodiac Dynamics Logo" className="h-14" />
               </div>
               
               <p className="text-gray-400 text-sm leading-relaxed mb-6">
