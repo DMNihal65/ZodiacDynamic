@@ -1,8 +1,8 @@
-import { motion, useScroll, useTransform, useAnimationFrame } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Star, Quote, MessageCircle } from 'lucide-react'
+import { Star, Quote, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 const testimonials = [
   {
@@ -47,79 +47,134 @@ const testimonials = [
   }
 ]
 
-// Double the testimonials array for infinite scroll effect
-const infiniteTestimonials = [...testimonials, ...testimonials]
+// Animated star component for background
+const AnimatedStar = ({ size, top, left, delay, duration }) => {
+  return (
+    <motion.div
+      className="absolute rounded-full bg-white"
+      style={{
+        width: size,
+        height: size,
+        top: `${top}%`,
+        left: `${left}%`,
+      }}
+      animate={{
+        opacity: [0.1, 0.8, 0.1],
+        scale: [1, 1.2, 1]
+      }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        delay,
+        ease: "easeInOut"
+      }}
+    />
+  )
+}
 
-const TestimonialCard = ({ testimonial, index }) => {
+AnimatedStar.propTypes = {
+  size: PropTypes.number.isRequired,
+  top: PropTypes.number.isRequired,
+  left: PropTypes.number.isRequired,
+  delay: PropTypes.number.isRequired,
+  duration: PropTypes.number.isRequired
+}
+
+// Floating particle effect
+const FloatingParticle = ({ color, size, top, left, duration }) => {
+  return (
+    <motion.div
+      className={`absolute rounded-full ${color}`}
+      style={{
+        width: size,
+        height: size,
+        top: `${top}%`,
+        left: `${left}%`,
+        opacity: 0.3
+      }}
+      animate={{
+        y: [0, -30, 0],
+        opacity: [0.2, 0.5, 0.2]
+      }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    />
+  )
+}
+
+FloatingParticle.propTypes = {
+  color: PropTypes.string.isRequired,
+  size: PropTypes.number.isRequired,
+  top: PropTypes.number.isRequired,
+  left: PropTypes.number.isRequired,
+  duration: PropTypes.number.isRequired
+}
+
+const TestimonialCard = ({ testimonial, isActive }) => {
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true
   })
-  const [isHovered, setIsHovered] = useState(false)
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className="relative group min-w-[300px] md:min-w-[400px] p-6 mx-4 h-[400px]
-                 bg-white/[0.03] hover:bg-white/[0.06] backdrop-blur-xl rounded-3xl
-                 border border-white/10 hover:border-white/20 transition-all duration-300
-                 flex flex-col"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={inView ? 
+        { 
+          opacity: isActive ? 1 : 0.5, 
+          scale: isActive ? 1 : 0.9,
+          y: isActive ? 0 : 20
+        } : 
+        { opacity: 0, scale: 0.9 }
+      }
+      transition={{ duration: 0.5 }}
+      className={`relative overflow-hidden ${isActive ? 'z-10' : 'z-0'} 
+                 bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-xl rounded-2xl
+                 border border-white/10 transition-all duration-500 h-full
+                 ${isActive ? 'shadow-xl shadow-blue-500/10' : ''}`}
     >
-      {/* Gradient Overlay */}
-      <motion.div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"
-        style={{
-          background: `radial-gradient(
-            600px circle at ${isHovered ? 'var(--mouse-x, 50%)' : '50%'} ${
-            isHovered ? 'var(--mouse-y, 50%)' : '50%'
-          }%, 
-          rgba(59, 130, 246, 0.1), 
-          transparent 40%
-          )`
-        }}
-      />
-
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={inView ? { scale: 1 } : { scale: 0 }}
-        transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
-        className="absolute -top-4 -right-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-3
-                   group-hover:scale-110 transition-transform duration-300"
-      >
-        <MessageCircle className="w-5 h-5 text-white" />
-      </motion.div>
-
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/10">
-          <img 
-            src={testimonial.image} 
-            alt={testimonial.name}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div>
-          <h4 className="text-white font-semibold group-hover:text-blue-400 transition-colors">
-            {testimonial.name}
-          </h4>
-          <p className="text-gray-400">{testimonial.role}</p>
-          <p className="text-blue-500 text-sm">{testimonial.company}</p>
-        </div>
+      {/* Quote icon */}
+      <div className="absolute -top-6 -left-6 text-blue-500/10">
+        <Quote className="w-24 h-24" />
       </div>
-
-      <p className="text-gray-300 mb-6 leading-relaxed flex-grow">{testimonial.content}</p>
-
-      <div className="flex gap-1">
-        {[...Array(testimonial.rating)].map((_, i) => (
-          <Star 
-            key={i}
-            className="w-4 h-4 text-blue-400 fill-blue-400"
-          />
-        ))}
+      
+      <div className="p-8 relative z-10 h-full flex flex-col">
+        {/* Content */}
+        <p className="text-gray-300 mb-6 leading-relaxed flex-grow text-lg italic">&ldquo;{testimonial.content}&rdquo;</p>
+        
+        {/* Divider */}
+        <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-6"></div>
+        
+        {/* Author info */}
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/10">
+            <img 
+              src={testimonial.image} 
+              alt={testimonial.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <h4 className="text-white font-semibold">
+              {testimonial.name}
+            </h4>
+            <p className="text-gray-400 text-sm">{testimonial.role}</p>
+          </div>
+        </div>
+        
+        {/* Rating */}
+        <div className="absolute top-8 right-8 flex gap-1">
+          {[...Array(testimonial.rating)].map((_, i) => (
+            <Star 
+              key={i}
+              className="w-4 h-4 text-blue-400 fill-blue-400"
+            />
+          ))}
+        </div>
       </div>
     </motion.div>
   )
@@ -134,7 +189,7 @@ TestimonialCard.propTypes = {
     rating: PropTypes.number.isRequired,
     company: PropTypes.string.isRequired
   }).isRequired,
-  index: PropTypes.number.isRequired
+  isActive: PropTypes.bool.isRequired
 }
 
 export default function Testimonials() {
@@ -142,56 +197,122 @@ export default function Testimonials() {
     threshold: 0.1,
     triggerOnce: true
   })
-
-  // Infinite scroll logic
-  const containerRef = useRef(null)
-  const [scrollX, setScrollX] = useState(0)
-
-  useAnimationFrame(() => {
-    if (containerRef.current) {
-      const { scrollWidth, clientWidth } = containerRef.current
-      
-      // Reset scroll position when reaching the end
-      if (scrollX >= (scrollWidth - clientWidth) / 2) {
-        setScrollX(0)
-        containerRef.current.scrollLeft = 0
-      } else {
-        setScrollX(prev => prev + 0.5) // Adjust speed by changing this value
-        containerRef.current.scrollLeft = scrollX
-      }
+  
+  // Carousel state
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [autoplay, setAutoplay] = useState(true)
+  const autoplayRef = useRef(null)
+  
+  // Generate random stars for background
+  const stars = Array.from({ length: 30 }, () => ({
+    size: Math.random() * 2 + 1,
+    top: Math.random() * 100,
+    left: Math.random() * 100,
+    delay: Math.random() * 5,
+    duration: Math.random() * 3 + 2
+  }))
+  
+  // Generate floating particles
+  const particles = Array.from({ length: 15 }, () => {
+    const colors = [
+      'bg-blue-500', 'bg-indigo-500', 'bg-purple-500', 
+      'bg-pink-500', 'bg-cyan-500'
+    ]
+    return {
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 8 + 4,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      duration: Math.random() * 5 + 5
     }
   })
-
-  // Parallax effect for background
-  const { scrollYProgress } = useScroll()
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
+  
+  // Handle navigation
+  const nextTestimonial = () => {
+    setActiveIndex((prev) => (prev + 1) % testimonials.length)
+    if (autoplay) resetAutoplay()
+  }
+  
+  const prevTestimonial = () => {
+    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+    if (autoplay) resetAutoplay()
+  }
+  
+  // Autoplay functionality
+  const resetAutoplay = () => {
+    if (autoplayRef.current) {
+      clearInterval(autoplayRef.current)
+    }
+    
+    autoplayRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % testimonials.length)
+    }, 5000)
+  }
+  
+  useEffect(() => {
+    if (autoplay) {
+      resetAutoplay()
+    }
+    
+    return () => {
+      if (autoplayRef.current) {
+        clearInterval(autoplayRef.current)
+      }
+    }
+  }, [autoplay])
+  
+  // Pause autoplay on hover
+  const handleMouseEnter = () => setAutoplay(false)
+  const handleMouseLeave = () => {
+    setAutoplay(true)
+    resetAutoplay()
+  }
 
   return (
-    <section className="py-32 relative overflow-hidden bg-gradient-to-br from-[#070B14] to-[#0F172A]">
-      {/* Grid Background */}
-      <div className="absolute inset-0 opacity-[0.15]">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'url("/grid.svg")',
-          backgroundSize: '50px 50px',
-          backgroundRepeat: 'repeat',
-          maskImage: 'linear-gradient(to bottom, transparent, black, transparent)',
-        }} />
+    <section 
+      className="py-24 relative overflow-hidden"
+      id="testimonials"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Background */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <img 
+          src="/ffflurry.svg" 
+          alt="Background pattern" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
+      {/* Stars background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+        {stars.map((star, i) => (
+          <AnimatedStar 
+            key={i}
+            size={star.size}
+            top={star.top}
+            left={star.left}
+            delay={star.delay}
+            duration={star.duration}
+          />
+        ))}
+      </div>
+      
+      {/* Floating particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+        {particles.map((particle, i) => (
+          <FloatingParticle 
+            key={i}
+            color={particle.color}
+            size={particle.size}
+            top={particle.top}
+            left={particle.left}
+            duration={particle.duration}
+          />
+        ))}
       </div>
 
-      {/* Gradient Background */}
-      <motion.div 
-        className="absolute inset-0"
-        animate={{
-          background: [
-            'radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)',
-            'radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)',
-            'radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)',
-          ],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-      />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-20">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 20 }}
@@ -204,46 +325,79 @@ export default function Testimonials() {
             transition={{ duration: 0.5, type: "spring" }}
             className="inline-block mb-4"
           >
-            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-2xl">
+            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-xl">
               <MessageCircle className="w-8 h-8 text-white" />
             </div>
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text 
-                       bg-gradient-to-r from-white to-gray-300 mb-6">
+                       bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 mb-6">
             Client Success Stories
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Hear from our clients about their experience working with us
-            and the results we've delivered.
+            and the results we&apos;ve delivered.
           </p>
         </motion.div>
 
-        {/* Infinite Scroll Container */}
-        <div className="relative -mx-4 sm:-mx-6 lg:-mx-8">
-          {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#070B14] via-[#070B14]/80 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#070B14] via-[#070B14]/80 to-transparent z-10 pointer-events-none" />
+        {/* Testimonial Carousel */}
+        <div className="relative max-w-4xl mx-auto">
+          {/* Testimonial Cards */}
+          <div className="relative h-[400px] md:h-[350px]">
+            <AnimatePresence mode="wait">
+              {testimonials.map((testimonial, index) => (
+                <div 
+                  key={testimonial.name}
+                  className={`absolute inset-0 transition-all duration-500 ${index === activeIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                >
+                  <TestimonialCard 
+                    testimonial={testimonial} 
+                    isActive={index === activeIndex}
+                  />
+                </div>
+              ))}
+            </AnimatePresence>
+          </div>
           
-          {/* Testimonials Slider */}
-          <div 
-            ref={containerRef}
-            className="flex overflow-x-hidden scrollbar-hide py-8"
-            style={{ 
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              WebkitOverflowScrolling: 'touch'
-            }}
-          >
-            <div className="flex">
-              {infiniteTestimonials.map((testimonial, index) => (
-                <TestimonialCard 
-                  key={`${testimonial.name}-${index}`}
-                  testimonial={testimonial} 
-                  index={index} 
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mt-8">
+            <motion.button
+              onClick={prevTestimonial}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </motion.button>
+            
+            {/* Indicators */}
+            <div className="flex items-center gap-2">
+              {testimonials.map((_, index) => (
+                <motion.button
+                  key={index}
+                  onClick={() => {
+                    setActiveIndex(index)
+                    if (autoplay) resetAutoplay()
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === activeIndex 
+                      ? 'bg-blue-500 w-6' 
+                      : 'bg-white/20 hover:bg-white/40'
+                  }`}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
                 />
               ))}
             </div>
+            
+            <motion.button
+              onClick={nextTestimonial}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 text-white" />
+            </motion.button>
           </div>
         </div>
       </div>
