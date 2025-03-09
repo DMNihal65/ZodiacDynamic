@@ -61,8 +61,7 @@ export default function Navbar() {
             <img 
               src="/zodiac_logo.png"  
               alt="Zodiac Dynamics" 
-              height={'20%'}
-              className="h-14 w-14 md:h-14"
+              className="h-14 md:h-14"
             />
           </motion.a>
 

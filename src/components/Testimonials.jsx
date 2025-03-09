@@ -152,28 +152,28 @@ const TestimonialCard = ({ testimonial, isActive }) => {
         {/* Author info */}
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/10">
-            <img 
-              src={testimonial.image} 
-              alt={testimonial.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div>
+          <img 
+            src={testimonial.image} 
+            alt={testimonial.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div>
             <h4 className="text-white font-semibold">
-              {testimonial.name}
-            </h4>
+            {testimonial.name}
+          </h4>
             <p className="text-gray-400 text-sm">{testimonial.role}</p>
           </div>
-        </div>
-        
+      </div>
+
         {/* Rating */}
         <div className="absolute top-8 right-8 flex gap-1">
-          {[...Array(testimonial.rating)].map((_, i) => (
-            <Star 
-              key={i}
-              className="w-4 h-4 text-blue-400 fill-blue-400"
-            />
-          ))}
+        {[...Array(testimonial.rating)].map((_, i) => (
+          <Star 
+            key={i}
+            className="w-4 h-4 text-blue-400 fill-blue-400"
+          />
+        ))}
         </div>
       </div>
     </motion.div>
@@ -197,7 +197,7 @@ export default function Testimonials() {
     threshold: 0.1,
     triggerOnce: true
   })
-  
+
   // Carousel state
   const [activeIndex, setActiveIndex] = useState(0)
   const [autoplay, setAutoplay] = useState(true)
@@ -283,7 +283,7 @@ export default function Testimonials() {
           className="w-full h-full object-cover"
         />
       </div>
-      
+
       {/* Stars background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
         {stars.map((star, i) => (

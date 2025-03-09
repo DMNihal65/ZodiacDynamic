@@ -257,7 +257,7 @@ const ValueCard = ({ value, index }) => {
     green: 'bg-green-500/20 border-green-500/30 text-green-400',
     orange: 'bg-orange-500/20 border-orange-500/30 text-orange-400'
   };
-  
+
   return (
     <motion.div
       ref={ref}
@@ -276,7 +276,7 @@ const ValueCard = ({ value, index }) => {
         {isHovered && (
           <>
             {[...Array(5)].map((_, i) => (
-              <motion.div
+      <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ 
@@ -288,7 +288,7 @@ const ValueCard = ({ value, index }) => {
                 exit={{ opacity: 0, scale: 0 }}
                 transition={{ duration: 1 + Math.random() }}
                 className={`absolute w-1 h-1 rounded-full ${iconColors[value.color].split(' ')[2]}`}
-                style={{
+        style={{
                   top: '50%',
                   left: '50%',
                 }}
@@ -335,12 +335,12 @@ const ValueCard = ({ value, index }) => {
                 className="overflow-hidden"
               >
                 <div className="pt-2 space-y-2">
-                  {value.highlights.map((highlight, i) => (
-                    <div key={i} className="flex items-center text-gray-400 group-hover:text-gray-300">
+          {value.highlights.map((highlight, i) => (
+            <div key={i} className="flex items-center text-gray-400 group-hover:text-gray-300">
                       <Check className={`w-4 h-4 mr-2 ${iconColors[value.color].split(' ')[2]}`} />
-                      <span>{highlight}</span>
-                    </div>
-                  ))}
+              <span>{highlight}</span>
+            </div>
+          ))}
                 </div>
               </motion.div>
             )}
@@ -379,7 +379,7 @@ const StatCounter = ({ stat, index }) => {
       return () => clearInterval(timer);
     }
   }, [inView, targetNumber]);
-  
+
   return (
     <motion.div
       ref={ref}
@@ -398,7 +398,7 @@ const StatCounter = ({ stat, index }) => {
         <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 mb-2 text-center">
           {count}{stat.number.includes('+') ? '+' : ''}
         </div>
-        <div className="text-gray-300 font-medium text-center">{stat.label}</div>
+      <div className="text-gray-300 font-medium text-center">{stat.label}</div>
       </div>
     </motion.div>
   );
@@ -469,7 +469,7 @@ export default function AboutUs() {
           className="w-full h-full object-cover"
         />
       </div>
-      
+
       {/* Stars background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
         {stars.map((star, i) => (
@@ -593,7 +593,7 @@ export default function AboutUs() {
             </motion.div>
             
             <span className="relative flex items-center justify-center gap-2">
-              Join Our Team
+            Join Our Team
               <ArrowRight className="ml-1 w-5 h-5 transition-transform group-hover:translate-x-1" />
             </span>
           </motion.button>
